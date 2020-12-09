@@ -60,7 +60,7 @@
           </tr>
         </thead>
         <tbody>
-          <?php foreach($items as $item){ ?>
+          <?php foreach($itmes_entity as $item){ ?>
           <tr class="<?php print(is_open($item) ? '' : 'close_item'); ?>">
             <td><img src="<?php print(IMAGE_PATH . $item['image']);?>" class="item_image"></td>
             <td><?php print($item['name']); ?></td>
