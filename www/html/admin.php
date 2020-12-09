@@ -19,4 +19,6 @@ if(is_admin($user) === false){
 }
 
 $items = get_all_items($db);
+$itmes_entity = entity_assoc_array($items);
+
 include_once VIEW_PATH . '/admin_view.php';

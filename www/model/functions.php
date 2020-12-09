@@ -135,3 +135,16 @@ function is_valid_upload_image($image){
   return true;
 }
 
+
+function entity_assoc_array($array) {
+  foreach ($array as $key => $value ) {
+      foreach ($value as $keys => $values ) {
+          $array[$key][$keys] = entity_str($values);
+      }
+  }
+  return $array;
+}
+
+function entity_str($str) {
+  return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+}
