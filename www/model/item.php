@@ -149,7 +149,7 @@ function delete_item($db, $item_id){
 
 // 非DB
 function is_open($item){
-  return $item['status'] === '1';
+  return $item['status'] == 1;
 }
 
 //商品を追加した時用
