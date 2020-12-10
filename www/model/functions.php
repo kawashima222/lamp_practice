@@ -31,6 +31,7 @@ function get_file($name){
   return array();
 }
 
+//引数のセッション名の値を取り出す
 function get_session($name){
   if(isset($_SESSION[$name]) === true){
     return $_SESSION[$name];
@@ -42,6 +43,7 @@ function set_session($name, $value){
   $_SESSION[$name] = $value;
 }
 
+//エラーをセッションにセット
 function set_error($error){
   $_SESSION['__errors'][] = $error;
 }

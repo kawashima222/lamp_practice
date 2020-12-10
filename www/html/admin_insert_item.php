@@ -4,6 +4,7 @@ require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'user.php';
 require_once MODEL_PATH . 'item.php';
 
+//商品追加が押された時
 session_start();
 
 if(is_logined() === false){
@@ -25,6 +26,7 @@ $stock = get_post('stock');
 
 $image = get_file('image');
 
+//regist_item → item.php
 if(regist_item($db, $name, $price, $stock, $status, $image)){
   set_message('商品を登録しました。');
 }else {

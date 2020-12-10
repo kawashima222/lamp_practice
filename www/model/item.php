@@ -53,12 +53,15 @@ function get_open_items($db){
 
 function regist_item($db, $name, $price, $stock, $status, $image){
   $filename = get_upload_filename($image);
+  //この中にfalseがあるか確認
   if(validate_item($name, $price, $stock, $filename, $status) === false){
     return false;
   }
   return regist_item_transaction($db, $name, $price, $stock, $status, $image, $filename);
 }
 
+//DBに書き込み
+//戻り値:true or false
 function regist_item_transaction($db, $name, $price, $stock, $status, $image, $filename){
   $db->beginTransaction();
   if(insert_item($db, $name, $price, $stock, $filename, $status) 
@@ -82,10 +85,10 @@ function insert_item($db, $name, $price, $stock, $filename, $status){
         image,
         status
       )
-    VALUES('{$name}', {$price}, {$stock}, '{$filename}', {$status_value});
+    VALUES(?, ?, ?, ?, ?);
   ";
 
-  return execute_query($db, $sql);
+  return execute_query_item($db, $name ,$price ,$stock ,$filename, $status_value ,$sql);
 }
 
 function update_item_status($db, $item_id, $status){
@@ -107,13 +110,13 @@ function update_item_stock($db, $item_id, $stock){
     UPDATE
       items
     SET
-      stock = {$stock}
+      stock = ?
     WHERE
-      item_id = {$item_id}
+      item_id = ?
     LIMIT 1
   ";
   
-  return execute_query($db, $sql);
+  return execute_query_stock($db, $item_id, $stock, $sql);
 }
 
 function destroy_item($db, $item_id){
@@ -145,12 +148,14 @@ function delete_item($db, $item_id){
 
 
 // 非DB
-//ステータスが1かどうか判定する関数
 function is_open($item){
   return $item['status'] === '1';
 }
 
+//商品を追加した時用
+//ここからバリデーション
 function validate_item($name, $price, $stock, $filename, $status){
+  //戻り値はture or false
   $is_valid_item_name = is_valid_item_name($name);
   $is_valid_item_price = is_valid_item_price($price);
   $is_valid_item_stock = is_valid_item_stock($stock);
