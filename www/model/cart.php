@@ -138,6 +138,7 @@ function sum_carts($carts){
   return $total_price;
 }
 
+
 function validate_cart_purchase($carts){
   if(count($carts) === 0){
     set_error('カートに商品が入っていません。');
