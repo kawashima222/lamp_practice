@@ -105,7 +105,7 @@ function update_item_status($db, $item_id, $status){
   return execute_query($db, $sql);
 }
 
-function update_item_stock($db, $item_id, $stock){
+function update_item_stock($db, $params){
   $sql = "
     UPDATE
       items
@@ -115,8 +115,7 @@ function update_item_stock($db, $item_id, $stock){
       item_id = ?
     LIMIT 1
   ";
-  
-  return execute_query_stock($db, $item_id, $stock, $sql);
+  return execute_query_stock($db,$sql ,$params);
 }
 
 function destroy_item($db, $item_id){

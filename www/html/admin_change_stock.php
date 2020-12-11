@@ -23,8 +23,13 @@ $item_id = get_post('item_id');
 $stock = get_post('stock');
 
 //execute()の戻り値で判定
-//update_item/stock → db.php
-if(update_item_stock($db, $item_id, $stock)){
+//update_item_stock → item.php
+//'type'=>PDO::PARAM_INTがint(1)になる
+$params = [
+  ['value'=>$stock,'type'=>PDO::PARAM_INT],
+  ['value'=>$item_id,'type'=>PDO::PARAM_INT]
+];
+if(update_item_stock($db, $params)){
   set_message('在庫数を変更しました。');
 } else {
   set_error('在庫数の変更に失敗しました。');

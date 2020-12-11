@@ -48,6 +48,24 @@ function execute_query($db, $sql, $params = array()){
   return false;
 }
 
+//共通化用
+function execute_query_stock($db, $sql, $params = array()){
+  $i = 0;
+  try{
+    $statement = $db->prepare($sql);
+    foreach ($params as $key => $value) {
+      var_dump($value['value']);
+      var_dump($value['type']);
+        $statement -> bindValue($i++,$value['value'],$value['type']);
+      }
+    return $statement->execute();
+  }catch(PDOException $e){
+    print $e;
+    set_error('更新に失敗しました。');
+  }
+  return false;
+}
+
 //itemの追加用
 function execute_query_item($db, $name ,$price ,$stock ,$filename, $status_value ,$sql){
   // print $status;
@@ -66,17 +84,17 @@ function execute_query_item($db, $name ,$price ,$stock ,$filename, $status_value
 }
 
 //stockの更新用
-function execute_query_stock($db, $item_id, $stock, $sql){
-  try{
-    $statement = $db->prepare($sql);
-    $statement->bindValue(1,$stock  ,PDO::PARAM_INT);
-    $statement->bindValue(2,$item_id,PDO::PARAM_INT);
-    //trueかfalse
-    //元々は上のexecute_queryと同じ
-    //executeにパラメータを渡すとPDOでbaindされているパラメータが消える
-    return $statement->execute();
-  }catch(PDOException $e){
-    set_error('更新に失敗しました。');
-  }
-  return false;
-}
+// function execute_query_stock($db, $item_id, $stock, $sql){
+//   try{
+//     $statement = $db->prepare($sql);
+//     $statement->bindValue(1,$stock  ,PDO::PARAM_INT);
+//     $statement->bindValue(2,$item_id,PDO::PARAM_INT);
+//     //trueかfalse
+//     //元々は上のexecute_queryと同じ
+//     //executeにパラメータを渡すとPDOでbaindされているパラメータが消える
+//     return $statement->execute();
+//   }catch(PDOException $e){
+//     set_error('更新に失敗しました。');
+//   }
+//   return false;
+// }
