@@ -31,6 +31,14 @@ function get_file($name){
   return array();
 }
 
+function get_csrf_token() {
+  //ランダムなバイナリ16文字を生成
+  $token_byte = openssl_random_pseudo_bytes(16);
+  //16進数に変換
+  $token = bin2hex($token_byte);
+  return set_session('token',$token);
+}
+
 //引数のセッション名の値を取り出す
 function get_session($name){
   if(isset($_SESSION[$name]) === true){
@@ -39,6 +47,7 @@ function get_session($name){
   return '';
 }
 
+//セッションに値をセットする
 function set_session($name, $value){
   $_SESSION[$name] = $value;
 }
@@ -74,6 +83,7 @@ function get_messages(){
   return $messages;
 }
 
+//ユーザIDをセッションから取り出す
 function is_logined(){
   return get_session('user_id') !== '';
 }
@@ -149,4 +159,11 @@ function entity_assoc_array($array) {
 
 function entity_str($str) {
   return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+}
+
+//トークンチェック
+function token_check() {
+  if (isset($_POST['token']) && $_POST['token'] === $_SESSION['token']) {
+    return true;
+  }
 }
