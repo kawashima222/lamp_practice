@@ -16,28 +16,8 @@ function get_db_connect(){
   return $dbh;
 }
 
-// function fetch_query($db, $sql, $params = array()){
-//   try{
-//     $statement = $db->prepare($sql);
-//     $statement->execute($params);
-//     return $statement->fetch();
-//   }catch(PDOException $e){
-//     set_error('データ取得に失敗しました。');
-//   }
-//   return false;
-// }
-
-// function fetch_all_query($db, $sql, $params = array()){
-//   try{
-//     $statement = $db->prepare($sql);
-//     $statement->execute($params);
-//     return $statement->fetchAll();
-//   }catch(PDOException $e){
-//     set_error('データ取得に失敗しました。');
-//   }
-//   return false;
-// }
-
+//関数の共通化
+//fechで取り出す
 function fetch_query($db ,$sql ,$params = array()){
   $i = 0;
   try{
@@ -54,6 +34,7 @@ function fetch_query($db ,$sql ,$params = array()){
 }
 
 //関数の共通化
+//fechAllで取り出す
 function fetch_query_bind($db ,$sql ,$params = array()){
   $i = 0;
   try{
@@ -69,21 +50,8 @@ function fetch_query_bind($db ,$sql ,$params = array()){
   return false;
 }
 
-
-
-//bindValue無し
-function execute_query($db, $sql, $params = array()){
-  try{
-    $statement = $db->prepare($sql);
-    return $statement->execute($params);
-  }catch(PDOException $e){
-    set_error('更新に失敗しました。');
-  }
-  return false;
-}
-
-//bindValue有り
 //関数の共通化
+//実行するだけ
 function execute_query_bind($db ,$params ,$sql){
   $i = 0;
   try{
@@ -98,19 +66,3 @@ function execute_query_bind($db ,$params ,$sql){
   }
   return false;
 }
-
-//stockの更新用
-// function execute_query_stock($db, $item_id, $stock, $sql){
-//   try{
-//     $statement = $db->prepare($sql);
-//     $statement->bindValue(1,$stock  ,PDO::PARAM_INT);
-//     $statement->bindValue(2,$item_id,PDO::PARAM_INT);
-//     //trueかfalse
-//     //元々は上のexecute_queryと同じ
-//     //executeにパラメータを渡すとPDOでbaindされているパラメータが消える
-//     return $statement->execute();
-//   }catch(PDOException $e){
-//     set_error('更新に失敗しました。');
-//   }
-//   return false;
-// }

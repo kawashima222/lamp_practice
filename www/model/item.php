@@ -127,7 +127,7 @@ function update_item_status($db, $item_id, $status){
 }
 
 //変更済み
-function update_item_stock($db, $params){
+function update_item_stock($db, $stock ,$item_id){
   $sql = "
     UPDATE
       items
@@ -137,7 +137,10 @@ function update_item_stock($db, $params){
       item_id = ?
     LIMIT 1
   ";
-  
+  $params = [
+    ['value'=>$stock,'type'=>PDO::PARAM_INT],
+    ['value'=>$item_id,'type'=>PDO::PARAM_INT]
+  ];
   return execute_query_bind($db, $params, $sql);
 }
 

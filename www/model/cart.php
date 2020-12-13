@@ -95,31 +95,37 @@ function insert_cart($db, $user_id, $item_id, $amount = 1){
   return execute_query_bind($db ,$params ,$sql);
 }
 
-//
+//変更済み
 function update_cart_amount($db, $cart_id, $amount){
   $sql = "
     UPDATE
       carts
     SET
-      amount = {$amount}
+      amount = ?
     WHERE
-      cart_id = {$cart_id}
+      cart_id = ?
     LIMIT 1
   ";
-  return execute_query($db, $sql);
+  $params = [
+    ['value'=>$amount,'type'=>PDO::PARAM_INT],
+    ['value'=>$cart_id,'type'=>PDO::PARAM_INT]
+  ];
+  return execute_query_bind($db ,$params ,$sql);
 }
 
-//
+//変更済み
 function delete_cart($db, $cart_id){
   $sql = "
     DELETE FROM
       carts
     WHERE
-      cart_id = {$cart_id}
+      cart_id = ?
     LIMIT 1
   ";
-
-  return execute_query($db, $sql);
+  $params = [
+    ['value'=>$cart_id,'type'=>PDO::PARAM_INT]
+  ];
+  return execute_query_bind($db ,$params ,$sql);
 }
 
 function purchase_carts($db, $carts){
@@ -127,6 +133,7 @@ function purchase_carts($db, $carts){
     return false;
   }
   foreach($carts as $cart){
+    var_dump($cart['item_id']);
     if(update_item_stock(
         $db, 
         $cart['item_id'], 
@@ -145,10 +152,12 @@ function delete_user_carts($db, $user_id){
     DELETE FROM
       carts
     WHERE
-      user_id = {$user_id}
+      user_id = ?
   ";
-
-  execute_query($db, $sql);
+  $params = [
+    ['value'=>$user_id,'type'=>PDO::PARAM_INT]
+  ];
+  execute_query_bind($db ,$params ,$sql);
 }
 
 //カートの商品の数だけforeachを回す
