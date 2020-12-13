@@ -2,7 +2,8 @@
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
 
-//
+//fechAll
+//ユーザーがカートに入れている商品を一覧で表示する用
 function get_user_carts($db, $user_id){
   $sql = "
     SELECT
@@ -30,7 +31,9 @@ function get_user_carts($db, $user_id){
   return fetch_query_bind($db, $sql ,$params);
 }
 
-//
+//fech
+//カート内に商品があるか確認する用
+//cartテーブル内で、ユーザーIDと商品IDが一致する物
 function get_user_cart($db, $user_id, $item_id){
   $sql = "
     SELECT
@@ -59,11 +62,12 @@ function get_user_cart($db, $user_id, $item_id){
     ['value'=>$item_id,'type'=>PDO::PARAM_INT]
   ];
 
-  return fetch_query_bind($db ,$sql ,$params);
+  return fetch_query($db ,$sql ,$params);
 
 }
-
+//fech
 function add_cart($db, $user_id, $item_id ) {
+  //カートに商品があればupdate、なければinsert
   $cart = get_user_cart($db, $user_id, $item_id);
   if($cart === false){
     return insert_cart($db, $user_id, $item_id);
@@ -91,6 +95,7 @@ function insert_cart($db, $user_id, $item_id, $amount = 1){
   return execute_query_bind($db ,$params ,$sql);
 }
 
+//
 function update_cart_amount($db, $cart_id, $amount){
   $sql = "
     UPDATE
@@ -104,6 +109,7 @@ function update_cart_amount($db, $cart_id, $amount){
   return execute_query($db, $sql);
 }
 
+//
 function delete_cart($db, $cart_id){
   $sql = "
     DELETE FROM
@@ -133,6 +139,7 @@ function purchase_carts($db, $carts){
   delete_user_carts($db, $carts[0]['user_id']);
 }
 
+//
 function delete_user_carts($db, $user_id){
   $sql = "
     DELETE FROM

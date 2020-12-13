@@ -45,7 +45,7 @@ function get_items($db, $is_open = false){
     ';
   }
 
-  return fetch_all_query($db, $sql);
+  return fetch_query_bind($db, $sql);
 }
 
 function get_all_items($db){

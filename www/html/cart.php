@@ -16,6 +16,7 @@ $user = get_login_user($db);
 
 //ユーザーIDから情報を取り出す
 //cart.php
+//fechAll
 $carts = get_user_carts($db, $user['user_id']);
 
 $total_price = sum_carts($carts);

@@ -16,10 +16,36 @@ function get_db_connect(){
   return $dbh;
 }
 
-function fetch_query($db, $sql, $params = array()){
+// function fetch_query($db, $sql, $params = array()){
+//   try{
+//     $statement = $db->prepare($sql);
+//     $statement->execute($params);
+//     return $statement->fetch();
+//   }catch(PDOException $e){
+//     set_error('データ取得に失敗しました。');
+//   }
+//   return false;
+// }
+
+// function fetch_all_query($db, $sql, $params = array()){
+//   try{
+//     $statement = $db->prepare($sql);
+//     $statement->execute($params);
+//     return $statement->fetchAll();
+//   }catch(PDOException $e){
+//     set_error('データ取得に失敗しました。');
+//   }
+//   return false;
+// }
+
+function fetch_query($db ,$sql ,$params = array()){
+  $i = 0;
   try{
     $statement = $db->prepare($sql);
-    $statement->execute($params);
+    foreach ($params as $key=>$value) {
+      $statement -> bindValue(++$i,$value['value'],$value['type']);
+    }
+    $statement->execute();
     return $statement->fetch();
   }catch(PDOException $e){
     set_error('データ取得に失敗しました。');
@@ -36,23 +62,14 @@ function fetch_query_bind($db ,$sql ,$params = array()){
       $statement -> bindValue(++$i,$value['value'],$value['type']);
     }
     $statement->execute();
-    return $statement->fetch();
-  }catch(PDOException $e){
-    set_error('データ取得に失敗しました。');
-  }
-  return false;
-}
-
-function fetch_all_query($db, $sql, $params = array()){
-  try{
-    $statement = $db->prepare($sql);
-    $statement->execute($params);
     return $statement->fetchAll();
   }catch(PDOException $e){
     set_error('データ取得に失敗しました。');
   }
   return false;
 }
+
+
 
 //bindValue無し
 function execute_query($db, $sql, $params = array()){
