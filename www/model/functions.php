@@ -97,11 +97,15 @@ function get_upload_filename($file){
   return get_random_string() . '.' . $ext;
 }
 
+//ランダムなファイル名の作成
 function get_random_string($length = 20){
   return substr(base_convert(hash('sha256', uniqid()), 16, 36), 0, $length);
 }
 
+//
 function save_image($image, $filename){
+  //move_uploaded_file 定義済み関数
+  //一時フォルダからアップロードするフォルダへ移動させる
   return move_uploaded_file($image['tmp_name'], IMAGE_DIR . $filename);
 }
 

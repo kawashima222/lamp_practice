@@ -20,7 +20,7 @@ if(is_admin($user) === false){
 
 $item_id = get_post('item_id');
 
-
+//item.php
 if(destroy_item($db, $item_id) === true){
   set_message('商品を削除しました。');
 } else {

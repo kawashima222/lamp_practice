@@ -2,6 +2,7 @@
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
 
+//
 function get_user_carts($db, $user_id){
   $sql = "
     SELECT
@@ -21,11 +22,15 @@ function get_user_carts($db, $user_id){
     ON
       carts.item_id = items.item_id
     WHERE
-      carts.user_id = {$user_id}
+      carts.user_id = ?
   ";
-  return fetch_all_query($db, $sql);
+  $params = [
+    ['value'=>$user_id,'type'=>PDO::PARAM_INT]
+  ];
+  return fetch_query_bind($db, $sql ,$params);
 }
 
+//
 function get_user_cart($db, $user_id, $item_id){
   $sql = "
     SELECT
@@ -45,12 +50,16 @@ function get_user_cart($db, $user_id, $item_id){
     ON
       carts.item_id = items.item_id
     WHERE
-      carts.user_id = {$user_id}
+      carts.user_id = ?
     AND
-      items.item_id = {$item_id}
+      items.item_id = ?
   ";
+  $params = [
+    ['value'=>$user_id,'type'=>PDO::PARAM_INT],
+    ['value'=>$item_id,'type'=>PDO::PARAM_INT]
+  ];
 
-  return fetch_query($db, $sql);
+  return fetch_query_bind($db ,$sql ,$params);
 
 }
 
@@ -62,6 +71,8 @@ function add_cart($db, $user_id, $item_id ) {
   return update_cart_amount($db, $cart['cart_id'], $cart['amount'] + 1);
 }
 
+//変更済み
+//カートに商品追加
 function insert_cart($db, $user_id, $item_id, $amount = 1){
   $sql = "
     INSERT INTO
@@ -70,10 +81,14 @@ function insert_cart($db, $user_id, $item_id, $amount = 1){
         user_id,
         amount
       )
-    VALUES({$item_id}, {$user_id}, {$amount})
+    VALUES(?, ?, ?)
   ";
-
-  return execute_query($db, $sql);
+  $params = [
+    ['value'=>$item_id,'type'=>PDO::PARAM_INT],
+    ['value'=>$user_id,'type'=>PDO::PARAM_INT],
+    ['value'=>$amount,'type'=>PDO::PARAM_INT]
+  ];
+  return execute_query_bind($db ,$params ,$sql);
 }
 
 function update_cart_amount($db, $cart_id, $amount){
@@ -129,7 +144,7 @@ function delete_user_carts($db, $user_id){
   execute_query($db, $sql);
 }
 
-
+//カートの商品の数だけforeachを回す
 function sum_carts($carts){
   $total_price = 0;
   foreach($carts as $cart){

@@ -4,6 +4,7 @@ require_once MODEL_PATH . 'db.php';
 
 // DB利用
 
+//指定した商品のみ取り出す
 function get_item($db, $item_id){
   $sql = "
     SELECT
@@ -16,12 +17,16 @@ function get_item($db, $item_id){
     FROM
       items
     WHERE
-      item_id = {$item_id}
+      item_id = ?
   ";
+  $params = [
+    ['value'=>$item_id,'type'=>PDO::PARAM_INT]
+  ];
 
-  return fetch_query($db, $sql);
+  return fetch_query_bind($db ,$sql, $params);
 }
 
+//全ての商品を取り出す
 function get_items($db, $is_open = false){
   $sql = '
     SELECT
@@ -52,20 +57,29 @@ function get_open_items($db){
 }
 
 function regist_item($db, $name, $price, $stock, $status, $image){
+  //ランダムなファイル名 or false
   $filename = get_upload_filename($image);
   //この中にfalseがあるか確認
   if(validate_item($name, $price, $stock, $filename, $status) === false){
     return false;
   }
-  return regist_item_transaction($db, $name, $price, $stock, $status, $image, $filename);
+  $params = [
+    ['value'=>$name,'type'=>PDO::PARAM_STR],
+    ['value'=>$price,'type'=>PDO::PARAM_INT],
+    ['value'=>$stock,'type'=>PDO::PARAM_INT],
+    ['value'=>$filename,'type'=>PDO::PARAM_STR],
+    ['value'=>$status,'type'=>PDO::PARAM_INT]
+  ];
+  return regist_item_transaction($db ,$params ,$image);
 }
 
 //DBに書き込み
 //戻り値:true or false
-function regist_item_transaction($db, $name, $price, $stock, $status, $image, $filename){
+function regist_item_transaction($db, $params ,$image){
   $db->beginTransaction();
-  if(insert_item($db, $name, $price, $stock, $filename, $status) 
-    && save_image($image, $filename)){
+  if(insert_item($db, $params) 
+  // if(insert_item($db, $name, $price, $stock, $filename, $status) 
+    && save_image($image, $params['3']['value'])){
     $db->commit();
     return true;
   }
@@ -74,8 +88,11 @@ function regist_item_transaction($db, $name, $price, $stock, $status, $image, $f
   
 }
 
-function insert_item($db, $name, $price, $stock, $filename, $status){
-  $status_value = PERMITTED_ITEM_STATUSES[$status];
+//変更済み
+function insert_item($db, $params){
+  // $status = open なら 1
+  // $status = close なら 2
+  $params['4']['value'] = PERMITTED_ITEM_STATUSES[$params['4']['value']];
   $sql = "
     INSERT INTO
       items(
@@ -88,24 +105,29 @@ function insert_item($db, $name, $price, $stock, $filename, $status){
     VALUES(?, ?, ?, ?, ?);
   ";
 
-  return execute_query_item($db, $name ,$price ,$stock ,$filename, $status_value ,$sql);
+  return execute_query_bind($db, $params,$sql);
 }
 
+//変更済み
 function update_item_status($db, $item_id, $status){
   $sql = "
     UPDATE
       items
     SET
-      status = {$status}
+      status = ?
     WHERE
-      item_id = {$item_id}
+      item_id = ?
     LIMIT 1
   ";
-  
-  return execute_query($db, $sql);
+  $params = [
+    ['value'=>$status,'type'=>PDO::PARAM_INT],
+    ['value'=>$item_id,'type'=>PDO::PARAM_INT]
+  ];
+  return execute_query_bind($db ,$params ,$sql);
 }
 
-function update_item_stock($db, $item_id, $stock){
+//変更済み
+function update_item_stock($db, $params){
   $sql = "
     UPDATE
       items
@@ -116,9 +138,10 @@ function update_item_stock($db, $item_id, $stock){
     LIMIT 1
   ";
   
-  return execute_query_stock($db, $item_id, $stock, $sql);
+  return execute_query_bind($db, $params, $sql);
 }
 
+//商品削除用
 function destroy_item($db, $item_id){
   $item = get_item($db, $item_id);
   if($item === false){
@@ -134,16 +157,19 @@ function destroy_item($db, $item_id){
   return false;
 }
 
+//変更済み
 function delete_item($db, $item_id){
   $sql = "
     DELETE FROM
       items
     WHERE
-      item_id = {$item_id}
+      item_id = ?
     LIMIT 1
   ";
-  
-  return execute_query($db, $sql);
+  $params = [
+    ['value'=>$item_id,'type'=>PDO::PARAM_INT]
+  ];
+  return execute_query_bind($db ,$params, $sql);
 }
 
 
