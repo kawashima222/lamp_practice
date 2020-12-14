@@ -2,6 +2,7 @@
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
 
+//変更済み
 function get_user($db, $user_id){
   $sql = "
     SELECT
@@ -12,13 +13,16 @@ function get_user($db, $user_id){
     FROM
       users
     WHERE
-      user_id = {$user_id}
+      user_id = ?
     LIMIT 1
   ";
-
-  return fetch_query($db, $sql);
+  $params = [
+    ['value'=>$user_id,'type'=>PDO::PARAM_STR]
+  ];
+  return fetch_query($db, $sql ,$params);
 }
 
+///変更済み
 function get_user_by_name($db, $name){
   $sql = "
     SELECT
@@ -29,13 +33,16 @@ function get_user_by_name($db, $name){
     FROM
       users
     WHERE
-      name = '{$name}'
+      name = ?
     LIMIT 1
   ";
-
-  return fetch_query($db, $sql);
+  $params = [
+    ['value'=>$name,'type'=>PDO::PARAM_STR]
+  ];
+  return fetch_query($db, $sql ,$params);
 }
 
+//ユーザーの情報を取得&ユーザーIDをセッションに保存
 function login_as($db, $name, $password){
   $user = get_user_by_name($db, $name);
   if($user === false || $user['password'] !== $password){
@@ -104,9 +111,12 @@ function insert_user($db, $name, $password){
   $sql = "
     INSERT INTO
       users(name, password)
-    VALUES ('{$name}', '{$password}');
+    VALUES (?,?);
   ";
-
-  return execute_query($db, $sql);
+  $params = [
+    ['value'=>$name,'type'=>PDO::PARAM_STR],
+    ['value'=>$password,'type'=>PDO::PARAM_STR]
+  ];
+  return execute_query_bind($db ,$params ,$sql);
 }
 

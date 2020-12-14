@@ -14,7 +14,9 @@ if(is_logined() === false){
 $db = get_db_connect();
 $user = get_login_user($db);
 
+//fech
 $carts = get_user_carts($db, $user['user_id']);
+// var_dump($carts);
 
 if(purchase_carts($db, $carts) === false){
   set_error('商品が購入できませんでした。');

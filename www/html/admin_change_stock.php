@@ -24,7 +24,7 @@ $stock = get_post('stock');
 
 //execute()の戻り値で判定
 //update_item/stock → db.php
-if(update_item_stock($db, $item_id, $stock)){
+if(update_item_stock($db ,$stock ,$item_id)){
   set_message('在庫数を変更しました。');
 } else {
   set_error('在庫数の変更に失敗しました。');
