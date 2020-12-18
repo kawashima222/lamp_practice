@@ -1,4 +1,5 @@
 <?php
+//DB操作関係
 
 function get_db_connect(){
   // MySQL用のDSN文字列
@@ -45,13 +46,15 @@ function fetch_query_bind($db ,$sql ,$params = array()){
     $statement->execute();
     return $statement->fetchAll();
   }catch(PDOException $e){
+    print $e;
     set_error('データ取得に失敗しました。');
   }
   return false;
 }
 
 //関数の共通化
-//実行するだけ
+//実行する
+//戻り値 true or false
 function execute_query_bind($db ,$params ,$sql){
   $i = 0;
   try{
@@ -65,4 +68,20 @@ function execute_query_bind($db ,$params ,$sql){
     set_error('更新に失敗しました。');
   }
   return false;
+}
+
+//最後に挿入したIDを取得する
+function execute_query_bind_lastinsertid($db ,$params ,$sql){
+  $i = 0;
+  try{
+    $statement = $db->prepare($sql);
+    foreach ((array)$params as $key=>$value) {
+      //$i++だと判定がtrueならプラスになるため++$iにする
+      $statement -> bindValue (++$i,$value['value'],$value['type']);
+    }
+    $statement->execute();
+    return $history_id = $db->lastinsertid();
+  }catch(PDOException $e){
+    set_error('更新に失敗しました。');
+  }
 }

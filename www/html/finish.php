@@ -16,12 +16,14 @@ $user = get_login_user($db);
 
 //fech
 $carts = get_user_carts($db, $user['user_id']);
-// var_dump($carts);
 
+//トランザクション処理
 if(purchase_carts($db, $carts) === false){
   set_error('商品が購入できませんでした。');
   redirect_to(CART_URL);
-} 
+}
+//購入処理
+purchase_history($db ,$user['user_id'] ,$carts);
 
 $total_price = sum_carts($carts);
 

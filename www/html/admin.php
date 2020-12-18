@@ -18,6 +18,7 @@ if(is_admin($user) === false){
   redirect_to(LOGIN_URL);
 }
 
+//全商品表示
 $items = get_all_items($db);
 $itmes_entity = entity_assoc_array($items);
 

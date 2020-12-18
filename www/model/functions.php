@@ -1,4 +1,5 @@
 <?php
+//共通の関数
 
 function dd($var){
   var_dump($var);
