@@ -2,7 +2,7 @@
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
 
-// DB利用
+// DB操作前の動作
 
 //指定した商品のみ取り出す
 function get_item($db, $item_id){
@@ -27,6 +27,7 @@ function get_item($db, $item_id){
 }
 
 //全ての商品を取り出す
+//デフォルトが$is_open = false → 引数が設定されていない時にfalse
 function get_items($db, $is_open = false){
   $sql = '
     SELECT
@@ -48,10 +49,37 @@ function get_items($db, $is_open = false){
   return fetch_query_bind($db, $sql);
 }
 
+//ページネーション用
+//商品を8件取り出す
+function get_limit_items($db ,$offset) {
+  $sql = '
+    SELECT
+      item_id, 
+      name,
+      stock,
+      price,
+      image,
+      status
+    FROM
+      items
+    WHERE 
+      status = 1
+    LIMIT 
+      8
+    OFFSET
+      ?
+    ';
+  $params = [
+    ['value'=>$offset,'type'=>PDO::PARAM_INT]
+  ];
+  return fetch_query_bind($db, $sql ,$params);
+}
+
 function get_all_items($db){
   return get_items($db);
 }
 
+//商品取得のsql句で"WHERE status === 1"が追加される → statusが公開になっている商品
 function get_open_items($db){
   return get_items($db, true);
 }

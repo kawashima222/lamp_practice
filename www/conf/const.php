@@ -19,6 +19,7 @@ define('LOGIN_URL', '/login.php');
 define('LOGOUT_URL', '/logout.php');
 define('HOME_URL', '/index.php');
 define('CART_URL', '/cart.php');
+define('HISTORY_URL', '/history.php');
 define('FINISH_URL', '/finish.php');
 define('ADMIN_URL', '/admin.php');
 
@@ -49,3 +50,8 @@ define('PERMITTED_IMAGE_TYPES', array(
   IMAGETYPE_JPEG => 'jpg',
   IMAGETYPE_PNG => 'png',
 ));
+
+define('date',date('Y/m/d H:i:s'));
+
+//ページング用
+define('ITEM_PAGE','8');

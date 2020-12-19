@@ -42,6 +42,24 @@
       <?php } ?>
       </div>
     </div>
+    <div class="page_link">
+      <!-- ページが1より大きかったら表示 -->
+      <?php if ($page > 1) { ?>
+        <a href="?page=<?php print $page-1 ?>">前へ</a>
+      <?php } ?>
+      <?php for ($i= 1; $i <= $total_page; $i++) { ?>
+        <?php if ($page == $i) { ?>
+          <span class="now_page"><?php print $page ?></span>
+        <?php }else { ?>
+          <a href="?page=<?php print $i ?>"><?php print $i ?></a>
+        <?php } ?>
+      <?php } ?>
+      <!-- ページがトータルページ未満なら表示 -->
+      <!-- ページが同じなら非表示 -->
+      <?php if ($page < $total_page) { ?>
+        <a href="?page=<?php print $page+1 ?>">次へ</a>
+      <?php } ?>
+    </div>
   </div>
   
 </body>

@@ -2,6 +2,8 @@
 require_once MODEL_PATH . 'functions.php';
 require_once MODEL_PATH . 'db.php';
 
+//ユーザー情報
+
 //変更済み
 function get_user($db, $user_id){
   $sql = "
