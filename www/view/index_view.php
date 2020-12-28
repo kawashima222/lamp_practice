@@ -8,7 +8,7 @@
 </head>
 <body>
   <?php include VIEW_PATH . 'templates/header_logined.php'; ?>
-  
+  <?php print $items_num ."件中" . $offset . "-" . ($offset+ITEM_PAGE) . "件目の商品"; ?>
 
   <div class="container">
     <h1>商品一覧</h1>

@@ -46,7 +46,6 @@ function fetch_query_bind($db ,$sql ,$params = array()){
     $statement->execute();
     return $statement->fetchAll();
   }catch(PDOException $e){
-    print $e;
     set_error('データ取得に失敗しました。');
   }
   return false;
@@ -70,6 +69,22 @@ function execute_query_bind($db ,$params ,$sql){
   return false;
 }
 
+function execute_query_bind_new($db ,$params ,$sql){
+  $i = 0;
+  try{
+    $statement = $db->prepare($sql);
+    foreach ((array)$params as $key=>$value) {
+      //$i++だと判定がtrueならプラスになるため++$iにする
+      $statement -> bindValue (++$i,$value['value'],$value['type']);
+    }
+    return $statement->execute();
+  }catch(PDOException $e){
+    set_error('更新に失敗しました。');
+    throw new PDOException;
+  }
+  return false;
+}
+
 //最後に挿入したIDを取得する
 function execute_query_bind_lastinsertid($db ,$params ,$sql){
   $i = 0;
@@ -83,5 +98,6 @@ function execute_query_bind_lastinsertid($db ,$params ,$sql){
     return $history_id = $db->lastinsertid();
   }catch(PDOException $e){
     set_error('更新に失敗しました。');
+    throw new PDOException;
   }
 }

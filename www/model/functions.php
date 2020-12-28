@@ -48,7 +48,7 @@ function get_session($name){
   return '';
 }
 
-//セッションに値をセットする
+//セッションの値を初期化するための関数
 function set_session($name, $value){
   $_SESSION[$name] = $value;
 }

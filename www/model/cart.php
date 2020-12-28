@@ -131,21 +131,12 @@ function delete_cart($db, $cart_id){
 }
 
 //商品購入時の処理(在庫数、カートの中身)
-function purchase_carts($db, $carts){
+function purchase_carts($db, $carts ,$user_id){
   if(validate_cart_purchase($carts) === false){
     return false;
   }
-  //商品数に応じてforeachを回す
-  foreach($carts as $cart){
-    //在庫数の更新
-    if(update_item_stock(
-        $db, 
-        $cart['item_id'], 
-        $cart['stock'] - $cart['amount']
-      ) === false){
-      set_error($cart['name'] . 'の購入に失敗しました。');
-    }
-  }
+  //購入処理
+  insert_history_details($db ,$user_id ,$carts);
   //ユーザーのカートの中身を空にする
   delete_user_carts($db, $carts[0]['user_id']);
 }
@@ -170,14 +161,6 @@ function purchase_carts($db, $carts){
 //   }
 // }
 
-//historyとdetailsへ書き込み
-function purchase_history($db ,$user_id ,$carts) {
-  
-  //historyテーブル(購入履歴)に書き込む 
-  //historyテーブルのIDを取得する
-  insert_history_details($db ,$user_id ,$carts);
-}
-
 //変更済み
 function delete_user_carts($db, $user_id){
   $sql = "
@@ -197,6 +180,18 @@ function delete_user_carts($db, $user_id){
 function insert_history_details($db ,$user_id ,$carts) {
   try {
     $db->beginTransaction(); 
+    //商品数に応じてforeachを回す
+  foreach($carts as $cart){
+    //在庫数の更新
+    if(update_item_stock_new(
+        $db, 
+        $cart['item_id'], 
+        $cart['stock'] - $cart['amount']
+      ) === false){
+      set_error($cart['name'] . 'の購入に失敗しました。');
+      throw new Exception;
+    }
+  }
     //history書き込み
     $sql1 = "
       INSERT INTO
@@ -208,7 +203,7 @@ function insert_history_details($db ,$user_id ,$carts) {
     ";
     $params = [
       ['value'=>$user_id,'type'=>PDO::PARAM_INT],
-      ['value'=>date,'type'=>PDO::PARAM_STR]
+      ['value'=>date,'type'=>"fasdfsaf"]
     ];
     $history_id = execute_query_bind_lastinsertid($db ,$params ,$sql1);
     //details書き込み
@@ -228,7 +223,7 @@ function insert_history_details($db ,$user_id ,$carts) {
         ['value'=>$cart['item_id'],'type'=>PDO::PARAM_INT],
         ['value'=>$cart['amount'],'type'=>PDO::PARAM_INT]
       ];
-      execute_query_bind($db ,$params ,$sql2);
+      execute_query_bind_new($db ,$params ,$sql2);
     }
     $db->commit();
   }catch(Exception $e) {

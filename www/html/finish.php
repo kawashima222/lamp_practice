@@ -18,12 +18,11 @@ $user = get_login_user($db);
 $carts = get_user_carts($db, $user['user_id']);
 
 //トランザクション処理
-if(purchase_carts($db, $carts) === false){
+if(purchase_carts($db, $carts ,$user['user_id']) === false){
   set_error('商品が購入できませんでした。');
   redirect_to(CART_URL);
 }
-//購入処理
-purchase_history($db ,$user['user_id'] ,$carts);
+
 
 $total_price = sum_carts($carts);
 

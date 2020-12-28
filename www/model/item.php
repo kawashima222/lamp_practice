@@ -169,7 +169,24 @@ function update_item_stock($db, $stock ,$item_id){
     ['value'=>$stock,'type'=>PDO::PARAM_INT],
     ['value'=>$item_id,'type'=>PDO::PARAM_INT]
   ];
-  return execute_query_bind($db, $params, $sql);
+  return execute_query_bind_new($db, $params, $sql);
+}
+
+function update_item_stock_new($db, $stock ,$item_id){
+  $sql = "
+    UPDATE
+      items
+    SET
+      stock = ?
+    WHERE
+      item_id = ?
+    LIMIT 1
+  ";
+  $params = [
+    ['value'=>$stock,'type'=>PDO::PARAM_INT],
+    ['value'=>$item_id,'type'=>PDO::PARAM_INT]
+  ];
+  return execute_query_bind_new($db, $params, $sql);
 }
 
 //商品削除用
